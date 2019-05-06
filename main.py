@@ -7,7 +7,7 @@ import math
 
 # lighting values
 view = [0,
-        0,
+        1,
         1];
 ambient = [50,
            50,
@@ -15,18 +15,16 @@ ambient = [50,
 light = [[0.5,
           0.75,
           1],
-         [0,
-          255,
-          255]]
+         [128,0,128]]
 areflect = [0.1,
             0.1,
             0.1]
 dreflect = [0.5,
             0.5,
             0.5]
-sreflect = [0.5,
-            0.5,
-            0.5]
+sreflect = [0.8,
+            0.8,
+            0.8]
 
 
 
