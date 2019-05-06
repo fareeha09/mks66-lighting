@@ -22,31 +22,92 @@ SPECULAR_EXP = 4
 
 #lighting functions
 def get_lighting(normal, view, ambient, light, areflect, dreflect, sreflect ):
-    calculate_ambient(ambient, areflect)
-
-def calculate_ambient(alight, areflect):
-    #ambient = A · K
-    a = 0 
-    for i in range(length(alight)):
-        abs(alight[i]) * abs(areflect[i]) * 
-    
+    #light[0]=[0.5,0.75,1]
+    A = calculate_ambient(ambient, areflect) 
+    D = calculate_diffuse(light, dreflect, normal)
+    S = calculate_specular(light, sreflect, view, normal)
+	
+    for i in range(3):
+		if D[i] < 0:
+			D[i] = 0
+		if S[i] < 0:
+			S[i] = 0
+	#light[COLOR]= limit_color(light[COLOR])
+    #print A
+    #print D
+    #print S
+    a=[]
+    for i in range(len(light[COLOR])):
+        a.append(int(A[i]+D[i]+S[i]))	
+	
+    return a
+	
+def calculate_ambient(alight, areflect): #ambient = A * K
+    a = [] 
+    for i in range(len(alight)):
+        a.append(alight[i] * areflect[i])
+	
+    return a
+	
 def calculate_diffuse(light, dreflect, normal):
-    #diffuse = P · Kd · (N · L)
+    #diffuse = P * Kd * (N dot L)
+	#print normal
+	L = normalize(light[LOCATION])
+	N = normalize(normal)
+	
+	#for i in range(3):
+	#	print(normalize(normal))
+	#	print(normalize(light[LOCATION]))
+	
+	#print N
+	#print L
+	
+	dot = dot_product(N, L)
+	a = []
+	
+	for i in range(len(light[COLOR])):
+		a.append(light[COLOR][i] * dreflect[i] * dot)
+	return a
+	
 
 def calculate_specular(light, sreflect, view, normal):
-    #specular = P · Ks · [(2(N·L)·N - L) · V]x
-
+    #specular = P * Ks * [((2(N dot L)) N - L) dot V]^x
+	L = normalize( light[LOCATION] )
+	N = normalize(normal)
+	V = normalize(view)
+	#print N
+	dot = dot_product(N, L)
+	
+	R = []
+	for i in range(3):
+		R.append(2 * (dot * N[i]) - L[i])
+	
+	a = []
+	for i in range(len(light[COLOR])):
+		a.append(light[COLOR][i] * sreflect[i] * math.pow((dot_product( R , V)), SPECULAR_EXP))
+	return a
+	
 def limit_color(color):
-    pass
-
+    for i in range(len(color)):
+		if (color[i] < 0):
+			color[i]= 0
+		elif (color[i] > 255):
+			color[i]= 255
+    return color
+	
 #vector functions
-#normalize vetor, should modify the parameter
+#normalize vector, should modify the parameter
 def normalize(vector):
     magnitude = math.sqrt( vector[0] * vector[0] +
                            vector[1] * vector[1] +
                            vector[2] * vector[2])
     for i in range(3):
-        vector[i] = vector[i] / magnitude
+		#print vector[i]
+		vector[i] = (vector[i] / magnitude)
+		#print vector[i]
+	
+	#print vector 
+    return vector
 
 #Return the dot porduct of a . b
 def dot_product(a, b):
