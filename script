@@ -51,5 +51,6 @@ move
 320 320 -200
 box
 -40 0 0 -20 -100 0
+display
 save
 grape.png
